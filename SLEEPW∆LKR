@@ -1,0 +1,58 @@
+#!/usr/bin/env python2.7
+
+## IRC Logging Bot
+
+import socket
+
+## Global Variables
+
+host="irc.freenode.org" #This is the IRC server variable.
+port=6667 #This is the port
+nick="*****" #Bot name
+password="*****"
+ident="*****" #ID to NickServ with this name
+realname="*****" #Bots real name for server identification
+channel="#*****" #This is the channel name
+
+## Connect, Identify, Joins Channel
+
+s=socket.socket(socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP ) #Creates a new socket
+s.connect((host, port)) #Connect to the host IRC network through port 6667
+s.sendall("NICK %s\r\n" % nick) #Sets the Bot's nick name
+s.sendall("USER %s %s bla :%s\r\n" % (ident, host, realname)) #Logs Bot into IRC
+s.sendall("PRIVMSG nickserv :identify %s %s\r\n" % (nick, password)) #Identifys
+s.send("JOIN :%s\r\n" % channel) #Join Channel #*****
+
+## Prep the Log
+
+filetxt = open('/*****/Log.txt', 'a+')
+
+## Keep us Connected
+
+try:
+    while True:
+        buffer = s.recv(1024)
+        msg = buffer.split( )
+        if msg[0] == "PING":
+            # answer PING with PONG, as RFC 1459 specifies
+            s.send("PONG %s" % msg[1])
+
+## Log from the Channel
+
+        if msg [1] == 'PRIVMSG':
+            nick_name = msg[0][:msg[0].find("!")]
+            message = ' '.join(msg[3:])
+            filetxt.write(nick_name.lstrip(':') + ' -> ' +
+                          message.lstrip(':') + '\n')
+            filetxt.flush( )
+
+## To Dissconnect the Bot
+        print msg ### This Allows Debugging
+        if msg[1] == 'PRIVMSG' and msg[2] == (nick) and msg[3] == ':!Shutdown':
+            ## Above are the three requirments and order they are required, (nick) can be swapped for a user name ie 'some user'
+            s.sendall("QUIT :Quit: Leaving..\r\n")
+            break
+
+## Close Down the Log
+finally:
+    filetxt.close( )
