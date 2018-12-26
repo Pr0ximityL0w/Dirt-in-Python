@@ -29,6 +29,3 @@ if __name__ == '__main__':
 	except KeyboardInterrupt:
 		print '[!] Server is Terminated'
 		httpd.server_close()
-
-
-
