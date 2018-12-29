@@ -46,7 +46,7 @@ while True:
     line=s.recv(200)
     if line.find('Welcome ')!=-1: 
         s.send('JOIN '+CHANNELINIT+'\r\n') 
-    if line.find('joubin')!=-1 and line.find('JOIN')==-1: 
+    if line.find(OWNER)!=-1 and line.find('JOIN')==-1: 
         line=line.rstrip() 
         parsemsg(line)
         
