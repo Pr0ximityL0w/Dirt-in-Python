@@ -9,7 +9,7 @@ password="*****"
 ident="*****"
 realname="*****"
 channel="*****"
-
+owner="******"
 
 s=socket.socket(socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP )
 s.connect((host, port))
@@ -38,7 +38,7 @@ try:
             filetxt.flush( )
 
 
-        if msg[1] == 'PRIVMSG' and msg[2] == (nick) and msg[3] == ':!Shutdown':
+        if (owner) and ':!Shutdown' in msg:
             s.sendall("QUIT :Quit: Leaving..\r\n")
             break
 
